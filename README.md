@@ -56,4 +56,12 @@ when rendering, so the only impact from `EXT:view` is:
 * Near-zero overhead when loading classes
 * Slight overhead per registered overlay that has to be processed
 
-In total the impact is a few megabytes of memory and about 3-10 boolean condition checks and file existence checks, respectively.
+In total the impact is a few megabytes of memory and a handful of boolean condition checks and file existence checks per overlay.
+
+## Implementing the extended View
+
+Simply install the extension and you are already done. Automagic.
+
+## Supported TYPO3 versions
+
+6.0+ only. With my sincerest apologies.
