@@ -8,7 +8,7 @@ Currently provides only one View override, the TemplateView, with only one added
 ## Template Path Overlays
 
 No more copying of entire folders of templates just to override one single template file. Instead, let EXT:view take care of that
-by overriding the default AbstractView and adding a simple capability.
+by overriding the default TemplateView and adding a simple capability.
 
 ```
 plugin.tx_news.view.overlays.myext.partialRootPath = EXT:myext/Resources/Private/Partials/
