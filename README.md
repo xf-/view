@@ -3,7 +3,7 @@ TYPO3 extension View: Fluid Views with extended capability
 
 Extends the standard Views in Fluid with classes that have additional capabilities.
 
-Currently provides just one View, the AbstractView, with one added feature:
+Currently provides only one View override, the TemplateView, with only one added feature:
 
 ## Template Path Overlays
 
