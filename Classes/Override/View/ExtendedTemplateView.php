@@ -34,17 +34,23 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 	protected function expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional) {
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
 		$pathOverlayConfigurations = $this->buildPathOverlayConfigurations($subpackageKey);
-		$templateRootPath = $this->getTemplateRootPath();
-		$partialRootPath = $this->getPartialRootPath();
-		$layoutRootPath = $this->getLayoutRootPath();
+		$templateRootPath = $backupTemplateRootPath = $this->getTemplateRootPath();
+		$partialRootPath = $backupPartialRootPath = $this->getPartialRootPath();
+		$layoutRootPath = $backupLayoutRootPath = $this->getLayoutRootPath();
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
-		$paths = $this->expandGenericPathPatternWithCustomPaths($pattern, $bubbleControllerAndSubpackage, $formatIsOptional, $templateRootPath, $partialRootPath, $layoutRootPath);
+		$paths = $this->expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 		foreach ($pathOverlayConfigurations as $overlayPaths) {
 			list ($templateRootPath, $partialRootPath, $layoutRootPath) = array_values($overlayPaths);
-			$subset = $this->expandGenericPathPatternWithCustomPaths($pattern, $bubbleControllerAndSubpackage, $formatIsOptional, $templateRootPath, $partialRootPath, $layoutRootPath);
+			$this->setTemplateRootPath($templateRootPath);
+			$this->setPartialRootPath($partialRootPath);
+			$this->setLayoutRootPath($layoutRootPath);
+			$subset = $this->expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 			$paths = array_merge($paths, $subset);
 		}
 		$paths = array_reverse($paths);
+		$this->setTemplateRootPath($backupTemplateRootPath);
+		$this->setPartialRootPath($backupPartialRootPath);
+		$this->setLayoutRootPath($backupLayoutRootPath);
 		return $paths;
 	}
 
@@ -93,17 +99,14 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 	 * @param string $pattern Pattern to be resolved
 	 * @param boolean $bubbleControllerAndSubpackage if TRUE, then we successively split off parts from "@controller" and "@subpackage" until both are empty.
 	 * @param boolean $formatIsOptional if TRUE, then half of the resulting strings will have ."@format" stripped off, and the other half will have it.
-	 * @param string $templateRootPath
-	 * @param string $partialRootPath
-	 * @param string $layoutRootPath
-	 * @return array
+	 * @return array unix style path
 	 */
-	private function expandGenericPathPatternWithCustomPaths($pattern, $bubbleControllerAndSubpackage, $formatIsOptional, $templateRootPath, $partialRootPath, $layoutRootPath) {
-		$pattern = str_replace('@templateRoot', $templateRootPath, $pattern);
-		$pattern = str_replace('@partialRoot', $partialRootPath, $pattern);
-		$pattern = str_replace('@layoutRoot', $layoutRootPath, $pattern);
-		$controllerName = $this->controllerContext->getRequest()->getControllerName();
+	protected function expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional) {
+		$pattern = str_replace('@templateRoot', $this->getTemplateRootPath(), $pattern);
+		$pattern = str_replace('@partialRoot', $this->getPartialRootPath(), $pattern);
+		$pattern = str_replace('@layoutRoot', $this->getLayoutRootPath(), $pattern);
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
+		$controllerName = $this->controllerContext->getRequest()->getControllerName();
 		if ($subpackageKey !== NULL) {
 			if (strpos($subpackageKey, \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR) !== FALSE) {
 				$namespaceSeparator = \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR;
@@ -131,5 +134,4 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 		} while ($i++ < count($subpackageParts) && $bubbleControllerAndSubpackage);
 		return $results;
 	}
-
 }
