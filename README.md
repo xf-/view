@@ -54,9 +54,9 @@ when rendering, so the only impact from `EXT:view` is:
 
 * Extremely minimal overhead in TypoScript
 * Near-zero overhead when loading classes
-* Slight overhead per registered overlay that has to be processed
+* Slight (short string-processing and array sorting) overhead per registered overlay that has to be processed
 
-In total the impact is a few megabytes of memory and a handful of boolean condition checks and file existence checks per overlay.
+In total the impact is a few megabytes of memory, some additional TS parsing initially and a handful of function calls per overlay.
 
 ## Implementing the extended View
 
@@ -65,3 +65,12 @@ Simply install the extension and you are already done. Automagic.
 ## Supported TYPO3 versions
 
 6.0+ only. With my sincerest apologies.
+
+### Why is this not part of the TYPO3 core extension Fluid or even Flow? I want this in Neos too, you know!
+
+If the core wants it, the core can certainly have it. But I don't want to waste my time arguing first why this should be part of
+Flow, then make it for Flow, then backport it and then finally be able to submit what I already made. I spent only three hours
+making this and I'll be damned if I should then spend three months battling the TYPO3 contribution hurdle system. With the way
+things are I would probably battle all the way until Neos is released. So there you have it.
+
+## Have fun, hope you enjoy!
