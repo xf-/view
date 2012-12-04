@@ -4,28 +4,6 @@ namespace TYPO3\CMS\View\Override\View;
 class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements \TYPO3\CMS\Extbase\Mvc\View\ViewInterface {
 
 	/**
-	 * Processes "@templateRoot", "@subpackage", "@controller", and "@format" placeholders inside $pattern.
-	 * This method is used to generate "fallback chains" for file system locations where a certain Partial can reside.
-	 *
-	 * If $bubbleControllerAndSubpackage is FALSE and $formatIsOptional is FALSE, then the resulting array will only have one element
-	 * with all the above placeholders replaced.
-	 *
-	 * If you set $bubbleControllerAndSubpackage to TRUE, then you will get an array with potentially many elements:
-	 * The first element of the array is like above. The second element has the @ controller part set to "" (the empty string)
-	 * The third element now has the @ controller part again stripped off, and has the last subpackage part stripped off as well.
-	 * This continues until both "@subpackage" and "@controller" are empty.
-	 *
-	 * Example for $bubbleControllerAndSubpackage is TRUE, we have the Tx_MyExtension_MySubPackage_Controller_MyController
-	 * as Controller Object Name and the current format is "html"
-	 *
-	 * If pattern is "@templateRoot/@subpackage/@controller/@action.@format", then the resulting array is:
-	 * - "Resources/Private/Templates/MySubPackage/My/@action.html"
-	 * - "Resources/Private/Templates/MySubPackage/@action.html"
-	 * - "Resources/Private/Templates/@action.html"
-	 *
-	 * If you set $formatIsOptional to TRUE, then for any of the above arrays, every element will be duplicated  - once with "@format"
-	 * replaced by the current request format, and once with ."@format" stripped off.
-	 *
 	 * @param string $pattern Pattern to be resolved
 	 * @param boolean $bubbleControllerAndSubpackage if TRUE, then we successively split off parts from "@controller" and "@subpackage" until both are empty.
 	 * @param boolean $formatIsOptional if TRUE, then half of the resulting strings will have ."@format" stripped off, and the other half will have it.
@@ -52,6 +30,46 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 		$this->setPartialRootPath($backupPartialRootPath);
 		$this->setLayoutRootPath($backupLayoutRootPath);
 		return $paths;
+	}
+
+	/**
+	 * @param string $pattern Pattern to be resolved
+	 * @param boolean $bubbleControllerAndSubpackage if TRUE, then we successively split off parts from "@controller" and "@subpackage" until both are empty.
+	 * @param boolean $formatIsOptional if TRUE, then half of the resulting strings will have ."@format" stripped off, and the other half will have it.
+	 * @return array unix style path
+	 */
+	protected function expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional) {
+		$pattern = str_replace('@templateRoot', $this->getTemplateRootPath(), $pattern);
+		$pattern = str_replace('@partialRoot', $this->getPartialRootPath(), $pattern);
+		$pattern = str_replace('@layoutRoot', $this->getLayoutRootPath(), $pattern);
+		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
+		$controllerName = $this->controllerContext->getRequest()->getControllerName();
+		if ($subpackageKey !== NULL) {
+			if (strpos($subpackageKey, \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR) !== FALSE) {
+				$namespaceSeparator = \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR;
+			} else {
+				$namespaceSeparator = \TYPO3\CMS\Fluid\Fluid::LEGACY_NAMESPACE_SEPARATOR;
+			}
+			$subpackageParts = explode($namespaceSeparator, $subpackageKey);
+		} else {
+			$subpackageParts = array();
+		}
+		$results = array();
+		$i = $controllerName === NULL ? 0 : -1;
+		do {
+			$temporaryPattern = $pattern;
+			if ($i < 0) {
+				$temporaryPattern = str_replace('@controller', $controllerName, $temporaryPattern);
+			} else {
+				$temporaryPattern = str_replace('//', '/', str_replace('@controller', '', $temporaryPattern));
+			}
+			$temporaryPattern = str_replace('@subpackage', implode('/', $i < 0 ? $subpackageParts : array_slice($subpackageParts, $i)), $temporaryPattern);
+			$results[] = \TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(str_replace('@format', $this->controllerContext->getRequest()->getFormat(), $temporaryPattern));
+			if ($formatIsOptional) {
+				$results[] = \TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(str_replace('.@format', '', $temporaryPattern));
+			}
+		} while ($i++ < count($subpackageParts) && $bubbleControllerAndSubpackage);
+		return $results;
 	}
 
 	/**
@@ -95,43 +113,4 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 		return $paths;
 	}
 
-	/**
-	 * @param string $pattern Pattern to be resolved
-	 * @param boolean $bubbleControllerAndSubpackage if TRUE, then we successively split off parts from "@controller" and "@subpackage" until both are empty.
-	 * @param boolean $formatIsOptional if TRUE, then half of the resulting strings will have ."@format" stripped off, and the other half will have it.
-	 * @return array unix style path
-	 */
-	protected function expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional) {
-		$pattern = str_replace('@templateRoot', $this->getTemplateRootPath(), $pattern);
-		$pattern = str_replace('@partialRoot', $this->getPartialRootPath(), $pattern);
-		$pattern = str_replace('@layoutRoot', $this->getLayoutRootPath(), $pattern);
-		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
-		$controllerName = $this->controllerContext->getRequest()->getControllerName();
-		if ($subpackageKey !== NULL) {
-			if (strpos($subpackageKey, \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR) !== FALSE) {
-				$namespaceSeparator = \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR;
-			} else {
-				$namespaceSeparator = \TYPO3\CMS\Fluid\Fluid::LEGACY_NAMESPACE_SEPARATOR;
-			}
-			$subpackageParts = explode($namespaceSeparator, $subpackageKey);
-		} else {
-			$subpackageParts = array();
-		}
-		$results = array();
-		$i = $controllerName === NULL ? 0 : -1;
-		do {
-			$temporaryPattern = $pattern;
-			if ($i < 0) {
-				$temporaryPattern = str_replace('@controller', $controllerName, $temporaryPattern);
-			} else {
-				$temporaryPattern = str_replace('//', '/', str_replace('@controller', '', $temporaryPattern));
-			}
-			$temporaryPattern = str_replace('@subpackage', implode('/', $i < 0 ? $subpackageParts : array_slice($subpackageParts, $i)), $temporaryPattern);
-			$results[] = \TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(str_replace('@format', $this->controllerContext->getRequest()->getFormat(), $temporaryPattern));
-			if ($formatIsOptional) {
-				$results[] = \TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(str_replace('.@format', '', $temporaryPattern));
-			}
-		} while ($i++ < count($subpackageParts) && $bubbleControllerAndSubpackage);
-		return $results;
-	}
 }
