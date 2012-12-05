@@ -1,7 +1,29 @@
 <?php
 namespace TYPO3\CMS\View\Override\View;
+$version = TYPO3_version;
+$shouldMapClassesForV6 = $version{0} >= 6;
+if ($shouldMapClassesForV6) {
+	class_alias('TYPO3\\CMS\\Fluid\\View\\TemplateView', 'TYPO3\\CMS\\View\\Override\\View\\TemplateViewProxy');
+	class_alias('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface', 'TYPO3\\CMS\\View\\Override\\View\\ViewInterfaceProxy');
+} else {
+	class_alias('\\Tx_Fluid_View_TemplateView', 'TYPO3\\CMS\\View\\Override\\View\\TemplateViewProxy');
+	class_alias('\\Tx_Extbase_Mvc_View_ViewInterface', 'TYPO3\\CMS\\View\\Override\\View\\ViewInterfaceProxy');
+}
+class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfaceProxy {
 
-class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements \TYPO3\CMS\Extbase\Mvc\View\ViewInterface {
+	/**
+	 * @var boolean
+	 */
+	protected $versionIsAtLeastSixPointZero = FALSE;
+
+	/**
+	 * CONSTRUCTOR
+	 */
+	public function __construct() {
+		parent::__construct();
+		$version = TYPO3_version;
+		$this->versionIsAtLeastSixPointZero = ($version{0} >= 6);
+	}
 
 	/**
 	 * @param string $pattern Pattern to be resolved
@@ -45,10 +67,10 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
 		$controllerName = $this->controllerContext->getRequest()->getControllerName();
 		if ($subpackageKey !== NULL) {
-			if (strpos($subpackageKey, \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR) !== FALSE) {
-				$namespaceSeparator = \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR;
+			if (strpos($subpackageKey, $this->versionIsAtLeastSixPointZero ? \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR : \Tx_Fluid_Fluid::NAMESPACE_SEPARATOR) !== FALSE) {
+				$namespaceSeparator = $this->versionIsAtLeastSixPointZero ? \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR : \Tx_Fluid_Fluid::NAMESPACE_SEPARATOR;
 			} else {
-				$namespaceSeparator = \TYPO3\CMS\Fluid\Fluid::LEGACY_NAMESPACE_SEPARATOR;
+				$namespaceSeparator = $this->versionIsAtLeastSixPointZero ? \TYPO3\CMS\Fluid\Fluid::LEGACY_NAMESPACE_SEPARATOR : \Tx_Fluid_Fluid::NAMESPACE_SEPARATOR;
 			}
 			$subpackageParts = explode($namespaceSeparator, $subpackageKey);
 		} else {
@@ -64,9 +86,9 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 				$temporaryPattern = str_replace('//', '/', str_replace('@controller', '', $temporaryPattern));
 			}
 			$temporaryPattern = str_replace('@subpackage', implode('/', $i < 0 ? $subpackageParts : array_slice($subpackageParts, $i)), $temporaryPattern);
-			$results[] = \TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(str_replace('@format', $this->controllerContext->getRequest()->getFormat(), $temporaryPattern));
+			$results[] = $this->fixWindowsFilePathProxy(str_replace('@format', $this->controllerContext->getRequest()->getFormat(), $temporaryPattern));
 			if ($formatIsOptional) {
-				$results[] = \TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath(str_replace('.@format', '', $temporaryPattern));
+				$results[] = $this->fixWindowsFilePathProxy(str_replace('.@format', '', $temporaryPattern));
 			}
 		} while ($i++ < count($subpackageParts) && $bubbleControllerAndSubpackage);
 		return $results;
@@ -77,8 +99,14 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 	 * @return array
 	 */
 	private function buildPathOverlayConfigurations($subpackageKey) {
-		$configurations = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface')
-			->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK);
+		if ($this->versionIsAtLeastSixPointZero) {
+			$configurationManagerInterfaceName = 'TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface';
+			$configurationType = constant('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK');
+		} else {
+			$configurationManagerInterfaceName = 'Tx_Extbase_Configuration_ConfigurationManagerInterface';
+			$configurationType = constant('Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK');
+		}
+		$configurations = $this->objectManager->get($configurationManagerInterfaceName)->getConfiguration($configurationType);
 		$configurations = $configurations['view'];
 		$templateRootPath = $this->getTemplateRootPath();
 		$partialRootPath = $this->getPartialRootPath();
@@ -89,13 +117,13 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 			$overlays = $configurations['overlays'];
 			foreach ($overlays as $overlaySubpackageKey => $configuration) {
 				if (isset($configuration['templateRootPath'])  === TRUE) {
-					$templateRootPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($configuration['templateRootPath']);
+					$templateRootPath = $this->getFileAbsFileNameProxy($configuration['templateRootPath']);
 				}
 				if (isset($configuration['partialRootPath']) === TRUE) {
-					$partialRootPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($configuration['partialRootPath']);
+					$partialRootPath = $this->getFileAbsFileNameProxy($configuration['partialRootPath']);
 				}
 				if (isset($configuration['layoutRootPath']) === TRUE) {
-					$layoutRootPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($configuration['layoutRootPath']);
+					$layoutRootPath = $this->getFileAbsFileNameProxy($configuration['layoutRootPath']);
 				}
 				$paths[$overlaySubpackageKey] = array(
 					'templateRootPath' => $templateRootPath,
@@ -113,4 +141,33 @@ class ExtendedTemplateView extends \TYPO3\CMS\Fluid\View\TemplateView implements
 		return $paths;
 	}
 
+	/**
+	 * @param string $filename
+	 * @return string
+	 */
+	protected function getFileAbsFileNameProxy($filename) {
+		if ($this->versionIsAtLeastSixPointZero) {
+			return \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($filename);
+		}
+		return \t3lib_div::fileGetAbsFileName($filename);
+	}
+
+	/**
+	 * @param string $path
+	 * @return string
+	 */
+	protected function fixWindowsFilePathProxy($path) {
+		if ($this->versionIsAtLeastSixPointZero) {
+			return \TYPO3\CMS\Core\Utility\GeneralUtility::fixWindowsFilePath($path);
+		}
+		return \t3lib_div::fixWindowsFilePath($path);
+	}
+
 }
+
+if ($shouldMapClassesForV6) {
+	class_alias('TYPO3\\CMS\\View\\Override\\View\\ExtendedTemplateViewProxy', 'TYPO3\\CMS\\View\\Override\\View\\ExtendedTemplateView');
+} else {
+	class_alias('TYPO3\\CMS\\View\\Override\\View\\ExtendedTemplateViewProxy', 'Tx_View_Override_View_ExtendedTemplateView');
+}
+unset($shouldMapClassesForV6, $version);
