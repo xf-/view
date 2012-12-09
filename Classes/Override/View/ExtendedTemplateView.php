@@ -17,12 +17,18 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 	protected $versionIsAtLeastSixPointZero = FALSE;
 
 	/**
+	 * @var boolean
+	 */
+	protected $versionIsFourPointFive = FALSE;
+
+	/**
 	 * CONSTRUCTOR
 	 */
 	public function __construct() {
 		parent::__construct();
 		$version = TYPO3_version;
 		$this->versionIsAtLeastSixPointZero = ($version{0} >= 6);
+		$this->versionIsFourPointFive = ($version{0} == 4 && $version{2} == 5);
 	}
 
 	/**
@@ -48,6 +54,7 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 			$paths = array_merge($paths, $subset);
 		}
 		$paths = array_reverse($paths);
+		$paths = array_unique($paths);
 		$this->setTemplateRootPath($backupTemplateRootPath);
 		$this->setPartialRootPath($backupPartialRootPath);
 		$this->setLayoutRootPath($backupLayoutRootPath);
@@ -146,6 +153,9 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 	 * @return string
 	 */
 	protected function getFileAbsFileNameProxy($filename) {
+		if ($this->versionIsFourPointFive) {
+			return \t3lib_div::getFileAbsFileName($filename);
+		}
 		if ($this->versionIsAtLeastSixPointZero) {
 			return \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($filename);
 		}
