@@ -64,7 +64,10 @@ Simply install the extension and you are already done. Automagic.
 
 ## Supported TYPO3 versions
 
-6.0+ only. With my sincerest apologies.
+* 4.5
+* 4.6
+* 4.7
+* 6.0
 
 ### Why is this not part of the TYPO3 core extension Fluid or even Flow? I want this in Neos too, you know!
 
