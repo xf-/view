@@ -3,11 +3,7 @@
 /***************************************************************
  * Extension Manager/Repository config file for ext "view".
  *
-<<<<<<< HEAD
- * Auto generated 05-12-2012 02:35
-=======
- * Auto generated 09-12-2012 10:37
->>>>>>> [TER] 1.1.0
+ * Auto generated 09-01-2013 01:10
  *
  * Manual updates:
  * Only the data in the array - everything else is removed by next
@@ -19,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Extends the built-in Fluid Views with smart overlay capabilities',
 	'category' => 'misc',
 	'shy' => 0,
-	'version' => '1.1.0',
+	'version' => '1.1.1',
 	'dependencies' => 'cms,extbase,fluid',
 	'conflicts' => '',
 	'priority' => '',
@@ -47,7 +43,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:4:{s:12:"ext_icon.gif";s:4:"e922";s:17:"ext_localconf.php";s:4:"c171";s:9:"README.md";s:4:"c012";s:46:"Classes/Override/View/ExtendedTemplateView.php";s:4:"6dbf";}',
+	'_md5_values_when_last_written' => 'a:5:{s:16:"ext_autoload.php";s:4:"59e2";s:12:"ext_icon.gif";s:4:"e922";s:17:"ext_localconf.php";s:4:"c171";s:9:"README.md";s:4:"ad36";s:46:"Classes/Override/View/ExtendedTemplateView.php";s:4:"cd86";}',
 	'suggests' => array(
 	),
 );
