@@ -159,7 +159,7 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		if ($this->versionIsAtLeastSixPointZero) {
 			return \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($filename);
 		}
-		return \t3lib_div::fileGetAbsFileName($filename);
+		return \t3lib_div::getFileAbsFileName($filename);
 	}
 
 	/**
