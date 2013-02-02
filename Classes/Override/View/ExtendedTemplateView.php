@@ -118,26 +118,26 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		$templateRootPath = $this->getTemplateRootPath();
 		$partialRootPath = $this->getPartialRootPath();
 		$layoutRootPath = $this->getLayoutRootPath();
-		$overlays = NULL;
+		$overlays = array();
 		$paths = array();
 		if (isset($configurations['overlays']) === TRUE) {
 			$overlays = $configurations['overlays'];
-			foreach ($overlays as $overlaySubpackageKey => $configuration) {
-				if (isset($configuration['templateRootPath'])  === TRUE) {
-					$templateRootPath = $this->getFileAbsFileNameProxy($configuration['templateRootPath']);
-				}
-				if (isset($configuration['partialRootPath']) === TRUE) {
-					$partialRootPath = $this->getFileAbsFileNameProxy($configuration['partialRootPath']);
-				}
-				if (isset($configuration['layoutRootPath']) === TRUE) {
-					$layoutRootPath = $this->getFileAbsFileNameProxy($configuration['layoutRootPath']);
-				}
-				$paths[$overlaySubpackageKey] = array(
-					'templateRootPath' => $templateRootPath,
-					'partialRootPath' => $partialRootPath,
-					'layoutRootPath' => $partialRootPath
-				);
+		}
+		foreach ($overlays as $overlaySubpackageKey => $configuration) {
+			if (isset($configuration['templateRootPath'])  === TRUE) {
+				$templateRootPath = $this->getFileAbsFileNameProxy($configuration['templateRootPath']);
 			}
+			if (isset($configuration['partialRootPath']) === TRUE) {
+				$partialRootPath = $this->getFileAbsFileNameProxy($configuration['partialRootPath']);
+			}
+			if (isset($configuration['layoutRootPath']) === TRUE) {
+				$layoutRootPath = $this->getFileAbsFileNameProxy($configuration['layoutRootPath']);
+			}
+			$paths[$overlaySubpackageKey] = array(
+				'templateRootPath' => $templateRootPath,
+				'partialRootPath' => $partialRootPath,
+				'layoutRootPath' => $partialRootPath
+			);
 		}
 		$paths = array_reverse($paths);
 		$paths[] = array(
