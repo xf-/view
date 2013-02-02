@@ -120,17 +120,17 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		$layoutRootPath = $this->getLayoutRootPath();
 		$overlays = array();
 		$paths = array();
-		if (isset($configurations['overlays']) === TRUE) {
+		if (TRUE === isset($configurations['overlays'])) {
 			$overlays = $configurations['overlays'];
 		}
 		foreach ($overlays as $overlaySubpackageKey => $configuration) {
-			if (isset($configuration['templateRootPath'])  === TRUE) {
+			if (TRUE === isset($configuration['templateRootPath'])) {
 				$templateRootPath = $this->getFileAbsFileNameProxy($configuration['templateRootPath']);
 			}
-			if (isset($configuration['partialRootPath']) === TRUE) {
+			if (TRUE === isset($configuration['partialRootPath'])) {
 				$partialRootPath = $this->getFileAbsFileNameProxy($configuration['partialRootPath']);
 			}
-			if (isset($configuration['layoutRootPath']) === TRUE) {
+			if (TRUE === isset($configuration['layoutRootPath'])) {
 				$layoutRootPath = $this->getFileAbsFileNameProxy($configuration['layoutRootPath']);
 			}
 			$paths[$overlaySubpackageKey] = array(
