@@ -1,13 +1,13 @@
 <?php
-namespace TYPO3\CMS\View\Override\View;
+namespace NamelessCoder\View\Override\View;
 $version = TYPO3_version;
 $shouldMapClassesForV6 = $version{0} >= 6;
 if ($shouldMapClassesForV6) {
-	class_alias('TYPO3\\CMS\\Fluid\\View\\TemplateView', 'TYPO3\\CMS\\View\\Override\\View\\TemplateViewProxy');
-	class_alias('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface', 'TYPO3\\CMS\\View\\Override\\View\\ViewInterfaceProxy');
+	class_alias('TYPO3\\CMS\\Fluid\\View\\TemplateView', 'NamelessCoder\\View\\Override\\View\\TemplateViewProxy');
+	class_alias('TYPO3\\CMS\\Extbase\\Mvc\\View\\ViewInterface', 'NamelessCoder\\View\\Override\\View\\ViewInterfaceProxy');
 } else {
-	class_alias('\\Tx_Fluid_View_TemplateView', 'TYPO3\\CMS\\View\\Override\\View\\TemplateViewProxy');
-	class_alias('\\Tx_Extbase_Mvc_View_ViewInterface', 'TYPO3\\CMS\\View\\Override\\View\\ViewInterfaceProxy');
+	class_alias('\\Tx_Fluid_View_TemplateView', 'NamelessCoder\\View\\Override\\View\\TemplateViewProxy');
+	class_alias('\\Tx_Extbase_Mvc_View_ViewInterface', 'NamelessCoder\\View\\Override\\View\\ViewInterfaceProxy');
 }
 class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfaceProxy {
 
@@ -176,8 +176,8 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 }
 
 if ($shouldMapClassesForV6) {
-	class_alias('TYPO3\\CMS\\View\\Override\\View\\ExtendedTemplateViewProxy', 'TYPO3\\CMS\\View\\Override\\View\\ExtendedTemplateView');
+	class_alias('NamelessCoder\\View\\Override\\View\\ExtendedTemplateViewProxy', 'NamelessCoder\\View\\Override\\View\\ExtendedTemplateView');
 } else {
-	class_alias('TYPO3\\CMS\\View\\Override\\View\\ExtendedTemplateViewProxy', 'Tx_View_Override_View_ExtendedTemplateView');
+	class_alias('NamelessCoder\\View\\Override\\View\\ExtendedTemplateViewProxy', 'Tx_View_Override_View_ExtendedTemplateView');
 }
 unset($shouldMapClassesForV6, $version);
