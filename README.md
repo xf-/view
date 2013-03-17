@@ -19,6 +19,9 @@ plugin.tx_view.viewhelpers.Tx_Fluid_ViewHelpers_Widget_PaginateViewHelper.argume
 # The same as above, but forcibly overriding any existing argument - example: override all Paginators everywhere
 plugin.tx_view.viewhelpers.Tx_Fluid_ViewHelpers_Widget_PaginateViewHelper.arguments.override.configuration { ... }
 
+# Make every VHS Asset of JavaScript type be included as standalone files
+plugin.tx_view.viewhelpers.Tx_Vhs_ViewHelpers_Asset_ScriptViewHelper.arguments.override.standalone = 1
+
 # Changing the value of the default "Options" tab title in Flux forms
 plugin.tx_view.viewhelpers.Tx_Flux_ViewHelpers_FlexForm_SheetViewHelper.arguments.defaults.label = My default title
 ```
