@@ -20,7 +20,7 @@ plugin.tx_view.viewhelpers.Tx_Fluid_ViewHelpers_Widget_PaginateViewHelper.argume
 plugin.tx_view.viewhelpers.Tx_Fluid_ViewHelpers_Widget_PaginateViewHelper.arguments.override.configuration { ... }
 
 # Changing the value of the default "Options" tab title in Flux forms
-plugin.tx_view.viewhelpers.Tx_Flux_ViewHelpers_FlexForm_SheetViewHelper.arguments.defaults.label = My custom default title
+plugin.tx_view.viewhelpers.Tx_Flux_ViewHelpers_FlexForm_SheetViewHelper.arguments.defaults.label = My default title
 ```
 
 Beware: the defined *default values* **only apply when the value is not specified**. This means that if the value is specified in
