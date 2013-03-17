@@ -3,7 +3,28 @@ TYPO3 extension View: Fluid Views with extended capability
 
 Extends the standard Views in Fluid with classes that have additional capabilities.
 
-Currently provides only one View override, the TemplateView, with only one added feature:
+## ViewHelper Argument Values
+
+If a ViewHelper instance's arguments' value has not been defined in the Fluid template it is possible to set it through TypoScript.
+All you have to know is the class name of the ViewHelper that contains the argument:
+
+```
+# Set a default configuration for Fluid's Paginate Widget
+plugin.tx_view.viewhelpers.Tx_Fluid_ViewHelpers_Widget_PaginateViewHelper.arguments.defaults.configuration {
+	itemsPerPage = 20
+	insertBelow = 1
+	insertAbove = 0
+}
+
+# The same as above, but forcibly overriding any existing argument - example: override all Paginators everywhere
+plugin.tx_view.viewhelpers.Tx_Fluid_ViewHelpers_Widget_PaginateViewHelper.arguments.override.configuration { ... }
+
+# Changing the value of the default "Options" tab title in Flux forms
+plugin.tx_view.viewhelpers.Tx_Flux_ViewHelpers_FlexForm_SheetViewHelper.arguments.defaults.label = My custom default title
+```
+
+Beware: the defined *default values* **only apply when the value is not specified**. This means that if the value is specified in
+the Fluid template it is not overridden, regardless of being empty or not. Overrides **always override, argument present or not**.
 
 ## Template Path Overlays
 
