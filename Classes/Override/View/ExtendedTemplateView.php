@@ -44,61 +44,29 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		$partialRootPath = $backupPartialRootPath = $this->getPartialRootPath();
 		$layoutRootPath = $backupLayoutRootPath = $this->getLayoutRootPath();
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
-		$paths = $this->expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
+		$paths = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
+		if (NULL === $overlayPaths) {
+			return $paths;
+		}
 		foreach ($pathOverlayConfigurations as $overlayPaths) {
-			list ($templateRootPath, $partialRootPath, $layoutRootPath) = array_values($overlayPaths);
-			$this->setTemplateRootPath($templateRootPath);
-			$this->setPartialRootPath($partialRootPath);
-			$this->setLayoutRootPath($layoutRootPath);
-			$subset = $this->expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
+			$templateRootPath = $overlayPaths['templateRootPath'];
+			$partialRootPath = $overlayPaths['partialRootPath'];
+			$layoutRootPath = $overlayPaths['layoutRootPath'];
+			if (FALSE === empty($templateRootPath)) {
+				$this->setTemplateRootPath($templateRootPath);
+			}
+			if (FALSE === empty($partialRootPath)) {
+				$this->setPartialRootPath($partialRootPath);
+			}
+			if (FALSE === empty($layoutRootPath)) {
+				$this->setLayoutRootPath($layoutRootPath);
+			}
+			$subset = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 			$paths = array_merge($paths, $subset);
 		}
 		$paths = array_reverse($paths);
 		$paths = array_unique($paths);
-		$this->setTemplateRootPath($backupTemplateRootPath);
-		$this->setPartialRootPath($backupPartialRootPath);
-		$this->setLayoutRootPath($backupLayoutRootPath);
 		return $paths;
-	}
-
-	/**
-	 * @param string $pattern Pattern to be resolved
-	 * @param boolean $bubbleControllerAndSubpackage if TRUE, then we successively split off parts from "@controller" and "@subpackage" until both are empty.
-	 * @param boolean $formatIsOptional if TRUE, then half of the resulting strings will have ."@format" stripped off, and the other half will have it.
-	 * @return array unix style path
-	 */
-	protected function expandGenericPathPatternReal($pattern, $bubbleControllerAndSubpackage, $formatIsOptional) {
-		$pattern = str_replace('@templateRoot', $this->getTemplateRootPath(), $pattern);
-		$pattern = str_replace('@partialRoot', $this->getPartialRootPath(), $pattern);
-		$pattern = str_replace('@layoutRoot', $this->getLayoutRootPath(), $pattern);
-		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
-		$controllerName = $this->controllerContext->getRequest()->getControllerName();
-		if ($subpackageKey !== NULL) {
-			if (strpos($subpackageKey, $this->versionIsAtLeastSixPointZero ? \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR : \Tx_Fluid_Fluid::NAMESPACE_SEPARATOR) !== FALSE) {
-				$namespaceSeparator = $this->versionIsAtLeastSixPointZero ? \TYPO3\CMS\Fluid\Fluid::NAMESPACE_SEPARATOR : \Tx_Fluid_Fluid::NAMESPACE_SEPARATOR;
-			} else {
-				$namespaceSeparator = $this->versionIsAtLeastSixPointZero ? \TYPO3\CMS\Fluid\Fluid::LEGACY_NAMESPACE_SEPARATOR : \Tx_Fluid_Fluid::NAMESPACE_SEPARATOR;
-			}
-			$subpackageParts = explode($namespaceSeparator, $subpackageKey);
-		} else {
-			$subpackageParts = array();
-		}
-		$results = array();
-		$i = $controllerName === NULL ? 0 : -1;
-		do {
-			$temporaryPattern = $pattern;
-			if ($i < 0) {
-				$temporaryPattern = str_replace('@controller', $controllerName, $temporaryPattern);
-			} else {
-				$temporaryPattern = str_replace('//', '/', str_replace('@controller', '', $temporaryPattern));
-			}
-			$temporaryPattern = str_replace('@subpackage', implode('/', $i < 0 ? $subpackageParts : array_slice($subpackageParts, $i)), $temporaryPattern);
-			$results[] = $this->fixWindowsFilePathProxy(str_replace('@format', $this->controllerContext->getRequest()->getFormat(), $temporaryPattern));
-			if ($formatIsOptional) {
-				$results[] = $this->fixWindowsFilePathProxy(str_replace('.@format', '', $temporaryPattern));
-			}
-		} while ($i++ < count($subpackageParts) && $bubbleControllerAndSubpackage);
-		return $results;
 	}
 
 	/**
@@ -115,9 +83,9 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		}
 		$configurations = $this->objectManager->get($configurationManagerInterfaceName)->getConfiguration($configurationType);
 		$configurations = $configurations['view'];
-		$templateRootPath = $this->getTemplateRootPath();
-		$partialRootPath = $this->getPartialRootPath();
-		$layoutRootPath = $this->getLayoutRootPath();
+		$templateRootPath = NULL;
+		$partialRootPath = NULL;
+		$layoutRootPath = NULL;
 		$overlays = array();
 		$paths = array();
 		if (TRUE === isset($configurations['overlays'])) {
@@ -141,9 +109,9 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		}
 		$paths = array_reverse($paths);
 		$paths[] = array(
-			'templateRootPath' => $templateRootPath,
-			'partialRootPath' => $partialRootPath,
-			'layoutRootPath' => $partialRootPath
+			'templateRootPath' => $this->getTemplateRootPath(),
+			'partialRootPath' => $this->getPartialRootPath(),
+			'layoutRootPath' => $this->getLayoutRootPath()
 		);
 		return $paths;
 	}
