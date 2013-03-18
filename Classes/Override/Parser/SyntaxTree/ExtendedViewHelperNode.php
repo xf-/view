@@ -52,6 +52,7 @@ class ExtendedViewHelperNodeProxy extends ViewHelperNodeProxy {
 		if (TRUE === isset(self::$argumentsCache[$className]['override'])) {
 			$arguments = $this->mergeArraysRecursive($arguments, self::$argumentsCache[$className]['override'], TRUE);
 		}
+		$arguments = $this->convertTypoScriptSettingsToSyntaxTreeNodesRecursive($arguments);
 		return parent::__construct($viewHelper, $arguments);
 	}
 
@@ -81,8 +82,10 @@ class ExtendedViewHelperNodeProxy extends ViewHelperNodeProxy {
 			if (TRUE === is_array($value)) {
 				$value = $this->convertTypoScriptSettingsToSyntaxTreeNodesRecursive($value);
 				$node = new \Tx_Fluid_Core_Parser_SyntaxTree_ArrayNode($value);
-			} else {
+			} elseif (FALSE === $value instanceof \Tx_Fluid_Core_Parser_SyntaxTree_NodeInterface) {
 				$node = new \Tx_Fluid_Core_Parser_SyntaxTree_TextNode($value);
+			} else {
+				$node = $value;
 			}
 			$array[$name] = $node;
 		}
