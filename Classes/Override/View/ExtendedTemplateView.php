@@ -46,7 +46,7 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
 		$paths = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 		if (NULL === $overlayPaths) {
-			return $paths;
+			//return $paths;
 		}
 		foreach ($pathOverlayConfigurations as $overlayPaths) {
 			$templateRootPath = $overlayPaths['templateRootPath'];
