@@ -104,7 +104,7 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 			$paths[$overlaySubpackageKey] = array(
 				'templateRootPath' => $templateRootPath,
 				'partialRootPath' => $partialRootPath,
-				'layoutRootPath' => $partialRootPath
+				'layoutRootPath' => $layoutRootPath
 			);
 		}
 		$paths = array_reverse($paths);
