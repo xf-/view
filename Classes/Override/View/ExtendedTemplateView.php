@@ -64,8 +64,8 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 			$subset = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 			$paths = array_merge($paths, $subset);
 		}
-		$paths = array_reverse($paths);
 		$paths = array_unique($paths);
+		$paths = array_reverse($paths);
 		return $paths;
 	}
 
