@@ -46,7 +46,7 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
 		$paths = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 		if (NULL === $overlayPaths) {
-			return $paths;
+			//return $paths;
 		}
 		foreach ($pathOverlayConfigurations as $overlayPaths) {
 			$templateRootPath = $overlayPaths['templateRootPath'];
@@ -64,8 +64,8 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 			$subset = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 			$paths = array_merge($paths, $subset);
 		}
-		$paths = array_reverse($paths);
 		$paths = array_unique($paths);
+		$paths = array_reverse($paths);
 		return $paths;
 	}
 
@@ -104,7 +104,7 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 			$paths[$overlaySubpackageKey] = array(
 				'templateRootPath' => $templateRootPath,
 				'partialRootPath' => $partialRootPath,
-				'layoutRootPath' => $partialRootPath
+				'layoutRootPath' => $layoutRootPath
 			);
 		}
 		$paths = array_reverse($paths);
