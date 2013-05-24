@@ -1,7 +1,9 @@
-TYPO3 extension View: Fluid Views with extended capability
-==========================================================
+Fluid Views with extended capability
+====================================
 
-Extends the standard Views in Fluid with classes that have additional capabilities.
+> Extends the standard Views in Fluid with classes that have additional capabilities.
+
+[![Build Status](https://travis-ci.org/FluidTYPO3/view.png?branch=master)](https://travis-ci.org/FluidTYPO3/view)
 
 ## ViewHelper Argument Values
 
