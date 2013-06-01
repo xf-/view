@@ -97,6 +97,6 @@ class ExtendedViewHelperNodeProxy extends ViewHelperNodeProxy {
 if ($shouldMapClassesForV6) {
 	class_alias('NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNodeProxy', 'NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNode');
 } else {
-	class_alias('NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNodeProxy', 'Tx_View_Override_SyntaxTree_ExtendedViewHelperNode');
+	class_alias('NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNodeProxy', 'Tx_View_Override_Parser_SyntaxTree_ExtendedViewHelperNode');
 }
 unset($shouldMapClassesForV6, $version);
