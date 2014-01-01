@@ -1,5 +1,5 @@
 <?php
-namespace NamelessCoder\View\Override\View;
+namespace FluidTYPO3\View\Override\View;
 $version = TYPO3_version;
 $shouldMapClassesForV6 = $version{0} >= 6;
 if ($shouldMapClassesForV6) {

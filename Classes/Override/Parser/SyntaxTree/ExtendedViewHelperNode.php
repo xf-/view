@@ -1,5 +1,5 @@
 <?php
-namespace NamelessCoder\View\Override\Parser\SyntaxTree;
+namespace FluidTYPO3\View\Override\Parser\SyntaxTree;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 $version = TYPO3_version;
