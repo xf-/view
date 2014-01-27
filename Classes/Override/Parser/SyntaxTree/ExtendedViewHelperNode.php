@@ -5,9 +5,9 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 $version = TYPO3_version;
 $shouldMapClassesForV6 = $version{0} >= 6;
 if ($shouldMapClassesForV6) {
-	class_alias('TYPO3\\CMS\\Fluid\\Core\\Parser\\SyntaxTree\\ViewHelperNode', 'NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ViewHelperNodeProxy');
+	class_alias('TYPO3\\CMS\\Fluid\\Core\\Parser\\SyntaxTree\\ViewHelperNode', 'FluidTYPO3\\View\\Override\\Parser\\SyntaxTree\\ViewHelperNodeProxy');
 } else {
-	class_alias('\\Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode', 'NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ViewHelperNodeProxy');
+	class_alias('\\Tx_Fluid_Core_Parser_SyntaxTree_ViewHelperNode', 'FluidTYPO3\\View\\Override\\Parser\\SyntaxTree\\ViewHelperNodeProxy');
 }
 class ExtendedViewHelperNodeProxy extends ViewHelperNodeProxy {
 
@@ -95,8 +95,8 @@ class ExtendedViewHelperNodeProxy extends ViewHelperNodeProxy {
 }
 
 if ($shouldMapClassesForV6) {
-	class_alias('NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNodeProxy', 'NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNode');
+	class_alias('FluidTYPO3\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNodeProxy', 'FluidTYPO3\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNode');
 } else {
-	class_alias('NamelessCoder\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNodeProxy', 'Tx_View_Override_Parser_SyntaxTree_ExtendedViewHelperNode');
+	class_alias('FluidTYPO3\\View\\Override\\Parser\\SyntaxTree\\ExtendedViewHelperNodeProxy', 'Tx_View_Override_Parser_SyntaxTree_ExtendedViewHelperNode');
 }
 unset($shouldMapClassesForV6, $version);
