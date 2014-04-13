@@ -102,6 +102,8 @@ Simply install the extension and you are already done. Automagic.
 * 4.6
 * 4.7
 * 6.0
+* 6.1
+* 6.2
 
 ### Why is this not part of the TYPO3 core extension Fluid or even Flow? I want this in Neos too, you know!
 
