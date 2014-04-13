@@ -1,0 +1,5 @@
+  # cat=basic/enable; type=boolean; label=Enable View path overlays: Switch this toggle ON to enable the view path overlays feature.
+overlays = 0
+
+  # cat=basic/enable; type=boolean; label=Enable ViewHelper argument overrides: Switch this toggle ON to enable enable setting new default values and forceful overrides of values used in ViewHelper arguments.
+viewhelperarguments = 0
