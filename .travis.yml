@@ -14,8 +14,6 @@ matrix:
        env: DB=mysql TYPO3=master INTEGRATION=master
 
 before_script:
-  # Get latest git version cause of travis issues (https://github.com/travis-ci/travis-ci/issues/1710)
-  - sudo apt-get update && sudo apt-get install git
   - cd ..
   - git clone --single-branch --branch $INTEGRATION --depth 1 git://github.com/typo3-ci/TYPO3-Travis-Integration.git build-environment
   - git clone --depth 1 git://github.com/FluidTYPO3/FluidTYPO3-CodingStandards.git build-environment/FluidTYPO3-CodingStandards
@@ -42,7 +40,7 @@ before_script:
   - if [[ "$DB" == "mysql" && -f typo3conf/ext/builder/Build/ImportSchema.sql ]]; then mysql -uroot typo3_test < typo3conf/ext/builder/Build/ImportSchema.sql; fi
   - if [[ "$DB" == "mysql" && -f typo3conf/ext/view/Build/ImportSchema.sql ]]; then mysql -uroot typo3_test < typo3conf/ext/view/Build/ImportSchema.sql; fi
   - if [[ -f typo3conf/LocalConfiguration.php && -f typo3conf/ext/view/Build/LocalConfiguration.php ]]; then cp typo3conf/ext/view/Build/LocalConfiguration.php typo3conf/LocalConfiguration.php; fi
-  - if [[ -f typo3conf/PackageStates.php && -f typo3conf/ext/view/Build/PackageStates.php ]]; then cp typo3conf/ext/view/Build/PackageStates.php typo3conf/PackageStates.php; fi
+  - if [[ -f typo3conf/ext/view/Build/PackageStates.php ]]; then cp typo3conf/ext/view/Build/PackageStates.php typo3conf/PackageStates.php; fi
   - if [[ -f typo3conf/localconf.php && -f typo3conf/ext/view/Build/localconf.php ]]; then cp typo3conf/ext/view/Build/localconf.php typo3conf/localconf.php; fi
   - if [[ -f typo3conf/ext/view/Tests/phpunit.xml ]]; then cp typo3conf/ext/view/Tests/phpunit.xml phpunit.xml; fi
 
