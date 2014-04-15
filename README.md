@@ -94,7 +94,11 @@ In total the impact is a few megabytes of memory, some additional TS parsing ini
 
 ## Implementing the extended View
 
-Simply install the extension and you are already done. Automagic.
+* Install the extension
+* Go to extension manager and click the gears right to EXT:view to go to extension configuration
+* Here you can enable view path overlay and ViewHelper overlay separately by checking the respective checkbox
+* Save the configuration
+* Youre done - overlays are enabled!
 
 ## Supported TYPO3 versions
 
