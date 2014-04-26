@@ -5,14 +5,6 @@ Fluid Views with extended capability
 
 [![Build Status](https://travis-ci.org/FluidTYPO3/view.png?branch=master)](https://travis-ci.org/FluidTYPO3/view)
 
-## Code Quality
-
-![Abstraction Instability Chart](Documentation/ComplexityChart.png)
-![Inheritance and dependency risk](Documentation/PyramidChart.png)
-
-_Understanding the [Abstraction Instability Chart](http://pdepend.org/documentation/handbook/reports/abstraction-instability-chart.html)
-and [Pyramid Chart](http://pdepend.org/documentation/handbook/reports/overview-pyramid.html)._
-
 ## ViewHelper Argument Values
 
 If a ViewHelper instance's arguments' value has not been defined in the Fluid template it is possible to set it through TypoScript.
