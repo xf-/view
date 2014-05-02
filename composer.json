@@ -1,8 +1,13 @@
 {
-    "name": "ft3/view",
+    "name": "fluidtypo3/view",
     "description": "The view package from FluidTYPO3",
-    "require": {
-        "composer/installers": "*"
-    },
-    "type": "typo3-cms-extension"
+    "type": "typo3-cms-extension",
+    "keywords": ["TYPO3 CMS", "templating", "Utility", "ViewHelper", "fedext", "fluid", "view"],
+    "homepage": "http://fluidtypo3.org",
+    "license": "GPL-2.0+",
+    "version": "1.3.0",
+    "support": {
+        "irc": "irc://irc.freenode.org/fedext",
+        "issues": "https://github.com/FluidTYPO3/vhs/issues"
+    }
 }
