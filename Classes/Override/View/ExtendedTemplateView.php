@@ -38,13 +38,16 @@ class ExtendedTemplateViewProxy extends TemplateViewProxy implements ViewInterfa
 	 * @return array unix style path
 	 */
 	protected function expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional) {
+		$paths = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
+		if ('BE' === TYPO3_MODE) {
+			return $paths;
+		}
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
 		$pathOverlayConfigurations = $this->buildPathOverlayConfigurations($subpackageKey);
 		$templateRootPath = $backupTemplateRootPath = $this->getTemplateRootPath();
 		$partialRootPath = $backupPartialRootPath = $this->getPartialRootPath();
 		$layoutRootPath = $backupLayoutRootPath = $this->getLayoutRootPath();
 		$subpackageKey = $this->controllerContext->getRequest()->getControllerSubpackageKey();
-		$paths = parent::expandGenericPathPattern($pattern, $bubbleControllerAndSubpackage, $formatIsOptional);
 		foreach ($pathOverlayConfigurations as $overlayPaths) {
 			$templateRootPath = $overlayPaths['templateRootPath'];
 			$partialRootPath = $overlayPaths['partialRootPath'];
